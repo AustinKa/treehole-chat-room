@@ -1,5 +1,6 @@
 <template>
   <div style="padding: 10px; margin-bottom: 50px">
+    <span>当前用户:{{user.username}}</span>
     <el-row>
       <el-col :span="4">
         <el-card style="width: 300px; height: 300px; color: #333">
@@ -13,7 +14,10 @@
         </el-card>
       </el-col>
 
-      <el-col :span="20">
+      <frient :userId="this.user.username" :chatUser="this.chatUser" @selectchatUser="selectchatUser"></frient>
+
+
+      <el-col :span="16">
         <div style="width: 800px; margin: 0 auto; background-color: white;
                     border-radius: 5px; box-shadow: 0 0 10px #ccc">
           <div style="text-align: center; line-height: 50px;">
@@ -29,6 +33,7 @@
           </div>
         </div>
       </el-col>
+
     </el-row>
   </div>
 </template>
@@ -37,17 +42,20 @@
 
 
   import {getTreeholeChatCommunications} from "@/api/chatcommunication";
+  import Frient from "@/components/frient/FrientComponent";
 
   let socket;
 
   export default {
     name: "HelloWorld",
+    components: {Frient},
     data() {
       return {
         circleUrl: 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png',
         user: {},
         isCollapse: false,
         users: [],
+        friends: [],
         chatUser: '',
         text: "",
         messages: [],
@@ -55,7 +63,7 @@
       }
     },
     created() {
-      this.init()
+      this.init();
     },
     methods: {
       selectchatUser(user){
@@ -126,6 +134,7 @@
         console.log(html)
         this.content += html;
       },
+
       init() {
         this.user = sessionStorage.getItem("user") ? JSON.parse(sessionStorage.getItem("user")) : {}
         let username = this.user.username;
